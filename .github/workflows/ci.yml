@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  checks:
+    name: Repository checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check required files
+        run: |
+          test -f myfile.txt
+          test -f ourfile.txt
+          test -f yourfile.txt
+          test -f .gitignore
+
+      - name: Check pull request template
+        run: |
+          test -f .github/PULL_REQUEST_TEMPLATE.md
+          grep -q "Описание изменений" .github/PULL_REQUEST_TEMPLATE.md
+          grep -q "Проверка" .github/PULL_REQUEST_TEMPLATE.md
