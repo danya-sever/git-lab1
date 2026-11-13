@@ -34,7 +34,10 @@ jobs:
           grep -q "Проверка" .github/PULL_REQUEST_TEMPLATE.md
 
       - name: Scan for secrets with TruffleHog
+        if: github.event_name == 'pull_request'
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          extra_args: --results=verified,unknown,unverified,filtered_unverified
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ github.event.pull_request.head.sha }}
+          extra_args: --results=verified,unknown,unverified
