@@ -34,4 +34,4 @@ jobs:
       - name: Scan for secrets with TruffleHog
         uses: trufflesecurity/trufflehog@main
         with:
-          extra_args: --results=verified,unknown,unverified
+          extra_args: --results=verified,unknown,unverified,filtered_unverified
