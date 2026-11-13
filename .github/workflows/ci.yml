@@ -1,6 +1,8 @@
 name: CI
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
 
@@ -34,4 +36,5 @@ jobs:
       - name: Scan for secrets with TruffleHog
         uses: trufflesecurity/trufflehog@main
         with:
-          extra_args: --results=verified,unknown,unverified,filtered_unverified
+          path: ./
+          extra_args: --results=verified,unknown,unverified --fail
