@@ -11,9 +11,14 @@ jobs:
     name: Repository checks
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Check required files
         run: |
@@ -27,3 +32,12 @@ jobs:
           test -f .github/PULL_REQUEST_TEMPLATE.md
           grep -q "Описание изменений" .github/PULL_REQUEST_TEMPLATE.md
           grep -q "Проверка" .github/PULL_REQUEST_TEMPLATE.md
+
+      - name: Scan for secrets with TruffleHog
+        if: github.event_name == 'pull_request'
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ github.event.pull_request.head.sha }}
+          extra_args: --results=verified,unknown,unverified
