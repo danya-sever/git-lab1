@@ -1,8 +1,7 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
+
   pull_request:
     branches: [main]
 
@@ -14,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Check required files
         run: |
@@ -27,3 +28,8 @@ jobs:
           test -f .github/PULL_REQUEST_TEMPLATE.md
           grep -q "Описание изменений" .github/PULL_REQUEST_TEMPLATE.md
           grep -q "Проверка" .github/PULL_REQUEST_TEMPLATE.md
+
+      - name: Scan for secrets with TruffleHog
+          uses: trufflesecurity/trufflehog@main
+          with:
+            extra_args: --results=verified,unknown,unverified
